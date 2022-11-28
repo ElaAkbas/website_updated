@@ -70,10 +70,10 @@ def predict(file):
 
 
 def connection(query, getResult=True):
-    s = 'DESKTOP-7R8HL94\SQLEXPRESS'  # Your server name
-    d = 'website'  # database
-    u = 'Ela'  # Your login
-    p = '123'  # Your login password
+    s = 'DESKTOP-7R8HL94\SQLEXPRESS'
+    d = 'website'
+    u = 'Ela'
+    p = '123'
     cstr = 'DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + s + ';DATABASE=' + d + ';UID=' + u + ';PWD=' + p
     conn = pyodbc.connect(cstr)
     print('CONNECTED!')
@@ -92,7 +92,7 @@ def connection(query, getResult=True):
 def Encrypt(p):
     # Got the bcrypt idea from this youtube video https://www.youtube.com/watch?v=CSHx6eCkmv0
     passwd = bytes(p, encoding='UTF-8')
-    salt = bcrypt.gensalt()  # this generates a random string to be appended to the end of password and hashpw will hash both of these strings
+    salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(passwd, salt)
     hashed = hashed.decode(encoding='UTF-8')
     return hashed
@@ -102,12 +102,12 @@ def check_password(password, email):
     passwd = bytes(password, encoding='UTF-8')
     hashed = connection(f"select password from customer where email = '{email}'", getResult=True)
     hashed = bytes(hashed[0][0], encoding='UTF-8')
-    if bcrypt.checkpw(passwd, hashed):  # checkpw will decrypt it and then return
+    if bcrypt.checkpw(passwd, hashed):
         return True
     else:
         return False
 
-def spaces_start_end(string): #removes spaces at the start or end of string
+def spaces_start_end(string):
     for count, letter in enumerate(string):
         if letter == ' ':
             continue
@@ -126,7 +126,7 @@ def spaces_start_end(string): #removes spaces at the start or end of string
     return string
 
 
-def spaces_mid(string): #first use spaces_start_end to remove any spaces at the start or beginning of string
+def spaces_mid(string):
     result = False
     for letter in string:
         if letter == ' ':
@@ -145,7 +145,6 @@ def allowed_sound_file(filename):
     ALLOWED_EXTENSIONS = {'wav'}
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -170,15 +169,6 @@ def upload():
                         os.makedirs(image_folder_path)
                     img_path = os.path.join(image_folder_path, secure_filename(image.filename))
                     image.save(img_path)
-                    # desired_size = 224  #because of hugging phase this does not seem needed but will keep it here in case you guys think it's needed
-                    # im = Image.open(img_path)
-                    # old_size = im.size
-                    # ratio = float(desired_size) / max(old_size)
-                    # new_size = tuple([int(x * ratio) for x in old_size])
-                    # img = im.resize(new_size, resample=Image.LANCZOS)
-                    # new_im = Image.new("RGB", (desired_size, desired_size))
-                    # new_im.paste(img, ((desired_size - new_size[0]) // 2, (desired_size - new_size[1]) // 2))
-                    # new_im.save(img_path)
                     prediction_image = predict(img_path) #do we use img_path or image.filename?
                     flash('Your image is successfully uploaded')
                 else:
@@ -188,7 +178,6 @@ def upload():
                     sound_folder_path = app.config['UPLOAD_SOUND_FOLDER'] + '/' + str(session['customer_id'])
                     if not os.path.exists(sound_path):
                         os.makedirs(sound_path)
-                    print(secure_filename(sound.filename))
                     sound_path = os.path.join(sound_folder_path, secure_filename(sound.filename))
                     sound.save(sound_path)
                     prediction_sound = predict(sound_path)
@@ -236,7 +225,6 @@ def contact():
 @app.route('/account', methods=['GET', 'POST'])
 def createaccount():
     if request.method == "POST":
-        print(request.form)
         first_name = request.form["first-name"]
         last_name = request.form["last-name"]
         age = request.form["age"]
@@ -245,9 +233,6 @@ def createaccount():
         password = request.form["psw"]
         new_password_1 = request.form["psw-repeat"]
         gender = request.form['gender']
-        print(request.form)
-        print(age)
-        print(type(age))
 
         if 'create' in request.form:
             try:
@@ -317,12 +302,13 @@ def forgot():
 def library():
     if "Back" in request.form:
         return redirect(url_for('index12'))
-    img_dir = app.config['UPLOAD_IMAGE_FOLDER'] + '/default_images'
-    img_list = os.listdir(img_dir)
-    image1 = str('/images/default_images/' + img_list[0])
-    image2 = str('/images/default_images/' + img_list[1])
-    image3 = str('/images/default_images/' + img_list[2])
-    return render_template('library.html', image1 = image1, image2 = image2, image3 = image3)
+    image1 = '/images/default_images/Wild_aye_aye_lumar.jpg'
+    image2 = '/images/default_images/Thorny_Dragon.jpg'
+    image3 = '/images/default_images/Saiga_Antelope.jpg'
+    image4 = '/images/default_images/Proboscis_Monkey.jpg'
+    image5 = '/images/default_images/Sunda_Colugo.jpg'
+    image6 = '/images/default_images/Fossa.jpg'
+    return render_template('library.html' , image1 = image1, image2 = image2, image3 = image3, image4 = image4, image5 = image5, image6 = image6)
 
 
 @app.route('/home', methods=['GET', 'POST'])
