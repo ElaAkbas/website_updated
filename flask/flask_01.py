@@ -151,6 +151,7 @@ def allowed_sound_file(filename):
 def upload():
     prediction_image = None
     prediction_sound = None
+    image_upload = 'images/default_images/animals.png'
     if request.method == 'POST':
 
         if "Back" in request.form:
@@ -170,6 +171,8 @@ def upload():
                     img_path = os.path.join(image_folder_path, secure_filename(image.filename))
                     image.save(img_path)
                     prediction_image = predict(img_path) #do we use img_path or image.filename?
+                    image_filename = secure_filename(image.filename)
+                    image_upload = 'images/' +  str(session['customer_id']) + '/' + image_filename
                     flash('Your image is successfully uploaded')
                 else:
                     flash('Please upload an image with the file extension png, jpg or jpeg')
@@ -191,7 +194,7 @@ def upload():
         prediction_image = None
     if not prediction_sound:
         prediction_sound = None
-    return render_template('upload_new.html', prediction_image = prediction_image, prediction_sound = prediction_sound )
+    return render_template('upload_new.html', prediction_image = prediction_image, prediction_sound = prediction_sound, image_upload = image_upload)
 
 
 @app.route('/contact', methods=['GET', 'POST'])

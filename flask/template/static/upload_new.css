@@ -8,8 +8,8 @@ align-items:flex-start;
 }
 
 div.t {
-  height: 500px;
-  width: 500px;
-  border: 3px solid red;
-  box-sizing: border-box;
+    max-height:400px;
+    max-width:500px;
+    height:auto;
+    width:auto;
 }
